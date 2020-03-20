@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+    reverse-proxy:
+        # The official v2 Traefik docker image
+        image: traefik:v2.1
+        # Enables the web UI and tells Traefik to listen to docker
+        command:    # stolen from https://www.reddit.com/r/Bitwarden/comments/dja93a/selfhosted_bitwarden_behind_traefik_v20_reverse/
+            - "--api.insecure=true"
+            - "--providers.docker"
+            - "--providers.docker.exposedByDefault=false"
+            - "--entryPoints.web.address=:80"
+            - "--entryPoints.websecure.address=:443"
+            - "--providers.docker.watch=true"
+        ports:
+            # The HTTP port
+            - "80:80"
+            - "443:443"
+            # The Web UI (enabled by --api.insecure=true)
+            - "8080:8080"
+        volumes:
+            # So that Traefik can listen to the Docker events
+            - /var/run/docker.sock:/var/run/docker.sock
+        networks:
+            - traefik
+
+networks:
+    traefik:
+        external:
+            name: traefik

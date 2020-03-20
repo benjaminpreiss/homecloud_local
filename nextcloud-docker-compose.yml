@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:alpine
+    restart: always
+    volumes:
+      - db:/var/lib/postgresql/data
+    env_file:
+      - db.env
+    networks:
+      - nextcloud
+
+  app:
+    image: nextcloud:apache
+    restart: always
+    # ports:
+    #  - 8080:80
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik
+      - traefik.backend=app
+      - traefik.http.routers.nextcloud.entryPoints=web
+      - traefik.http.routers.nextcloud.rule=Host("nextcloud.localhost")
+      - traefik.http.services.nextcloud.loadbalancer.server.port=80
+    volumes:
+      - nextcloud:/var/www/html
+    environment:
+      - POSTGRES_HOST=db
+      - NEXTCLOUD_TRUSTED_DOMAINS=nextcloud.localhost
+    env_file:
+      - db.env
+    depends_on:
+      - db
+    networks:
+      - traefik
+      - nextcloud
+
+volumes:
+  db:
+  nextcloud:
+
+networks:
+  traefik:
+    external:
+      name: traefik
+  nextcloud:
