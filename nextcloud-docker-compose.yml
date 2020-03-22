@@ -19,10 +19,25 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik
-      - traefik.backend=app
-      - traefik.http.routers.nextcloud.entryPoints=web
-      - traefik.http.routers.nextcloud.rule=Host("nextcloud.localhost")
-      - traefik.http.services.nextcloud.loadbalancer.server.port=80
+
+      # http service and router for nextcloud
+      - traefik.http.routers.nextcloud_router_http.entryPoints=web
+      - traefik.http.routers.nextcloud_router_http.service=nextcloud_service_http
+      - traefik.http.routers.nextcloud_router_http.rule=Host("nextcloud.localhost")
+      - traefik.http.services.nextcloud_service_http.loadbalancer.server.port=80
+
+      # https service and router for nextcloud
+      - traefik.http.routers.nextcloud_router_https.entryPoints=websecure
+      - traefik.http.routers.nextcloud_router_https.rule=Host("nextcloud.localhost")
+      - traefik.http.routers.nextcloud_router_https.tls.certresolver=myresolver
+      - traefik.http.routers.nextcloud_router_https.tls=true
+      - traefik.http.services.nextcloud_service_https.loadbalancer.server.port=80
+      - traefik.http.routers.nextcloud_router_https.service=nextcloud_service_https
+
+      # permanent http to https redirect
+      - traefik.http.routers.nextcloud_router_http.middlewares=nextcloud_https_redirect
+      - traefik.http.middlewares.nextcloud_https_redirect.redirectscheme.scheme=https
+      - traefik.http.middlewares.nextcloud_https_redirect.redirectscheme.permanent=true
     volumes:
       - nextcloud:/var/www/html
     environment:

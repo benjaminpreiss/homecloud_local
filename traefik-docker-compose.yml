@@ -5,12 +5,17 @@ services:
         # The official v2 Traefik docker image
         image: traefik:v2.1
         # Enables the web UI and tells Traefik to listen to docker
-        command:    # stolen from https://www.reddit.com/r/Bitwarden/comments/dja93a/selfhosted_bitwarden_behind_traefik_v20_reverse/
+        command:
             - "--api.insecure=true"
             - "--providers.docker"
             - "--providers.docker.exposedByDefault=false"
             - "--entryPoints.web.address=:80"
             - "--entryPoints.websecure.address=:443"
+            - "--log.level=DEBUG"
+            - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+            - "--certificatesresolvers.myresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
+            - "--certificatesresolvers.myresolver.acme.email=****@*****.***"
+            - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
             - "--providers.docker.watch=true"
         ports:
             # The HTTP port
