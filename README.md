@@ -156,3 +156,4 @@ It is a compilation of findings from
 - [dja93a on reddit](https://www.reddit.com/r/Bitwarden/comments/dja93a/selfhosted_bitwarden_behind_traefik_v20_reverse/)
 - [Chris Wiegman](https://chriswiegman.com/2020/01/running-nextcloud-with-docker-and-traefik-2/)
 - [Joshua Avalon](https://medium.com/@joshuaavalon/setup-traefik-v2-step-by-step-fae44ed8f76d)
+- [Sam Texas](https://www.simplecto.com/traefik-2-0-docker-and-letsencrypt/)
